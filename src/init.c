@@ -74,8 +74,8 @@ void initialize() {
 	MOTDTBackRight = initMotor(9, -1);
 
 	MOTARMFront = initMotor(4, 1);
-	MOTARMBottomLeft = initMotor(5, -1);
-	MOTARMBottomRight = initMotor(8, -1);
+	MOTARMBottomLeft = initMotor(8, -1);
+	MOTARMBottomRight = initMotor(5, -1);
 
 	MOTCOL = initMotor(6, 1);
 
@@ -88,15 +88,16 @@ void initialize() {
 	imeReset(IMEARMLEFT);
 	imeReset(IMEARMRIGHT);
 
-	PidARMLeft = initPid(.2, 0, 0);
-	PidARMRight = initPid(.2, 0, 0);
+	PidARMLeft = initPid(.3, 0, 0);
+	PidARMRight = initPid(.3, 0, 0);
 	PidARMFront = initPid(.3, 0, 0);
-	PidARMLeft.running = 1;
-	PidARMRight.running = 1;
+	PidARMLeft.running = 0;
+	PidARMRight.running = 0;
 	PidARMFront.running = 0;
 
 	taskCreate(startIOTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_HIGHEST);
 	taskCreate(startPidTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
+
 
 }
 void startIOTask(void *ignore) {
@@ -187,7 +188,7 @@ void startIOTask(void *ignore) {
 void startPidTask(void *ignore) {
 	while(1) {
 		//Manually add each pid loop here
-		processPid(&PidARMLeft, EncARMRight.value);
+		processPid(&PidARMLeft, EncARMLeft.value);
 		processPid(&PidARMRight, EncARMRight.value);
 		processPid(&PidARMFront, PotARMFront.value);
 		if(PidARMLeft.running) {

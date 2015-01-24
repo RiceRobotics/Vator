@@ -57,20 +57,20 @@ void operatorControl() {
 		getJoystickForDriveTrain();
 
 		if(joystickGetDigital(1, 6, JOY_UP)) {
-			PidARMLeft.setPoint += 10;
-			PidARMRight.setPoint += 10;
-//			MOTARMBottomLeft.out = 127;
-//			MOTARMBottomRight.out = 127;
+//			PidARMLeft.setPoint += 10;
+//			PidARMRight.setPoint += 10;
+			MOTARMBottomLeft.out = 127;
+			MOTARMBottomRight.out = 127;
 		}
 		else if(joystickGetDigital(1, 6, JOY_DOWN)) {
-			PidARMLeft.setPoint -= 5;
-			PidARMRight.setPoint -= 5;
-//			MOTARMBottomLeft.out = -127;
-//			MOTARMBottomRight.out = -127;
+//			PidARMLeft.setPoint -= 5;
+//			PidARMRight.setPoint -= 5;
+			MOTARMBottomLeft.out = -127;
+			MOTARMBottomRight.out = -127;
 		}
 		else {
-//			MOTARMBottomLeft.out = 0;
-//			MOTARMBottomRight.out = 0;
+			MOTARMBottomLeft.out = 0;
+			MOTARMBottomRight.out = 0;
 		}
 		if(joystickGetDigital(1, 8, JOY_UP)) {
 			PidARMLeft.setPoint = EncARMLeft.value;
