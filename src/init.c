@@ -93,13 +93,12 @@ void initialize() {
 	PidARMLeft = initPid(.3, 0, 0);
 	PidARMRight = initPid(.3, 0, 0);
 	PidARMFront = initPid(.3, 0, 0);
-	PidARMLeft.running = 0;
-	PidARMRight.running = 0;
+	PidARMLeft.running = 1;
+	PidARMRight.running = 1;
 	PidARMFront.running = 0;
 
 	taskCreate(startIOTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_HIGHEST);
 	taskCreate(startPidTask, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
-
 
 }
 void startIOTask(void *ignore) {

@@ -3,7 +3,6 @@
 	<name>Vator</name>
 	<comment></comment>
 	<projects>
-		<project>RiceBot</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -76,4 +75,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>RiceBot</name>
+			<type>2</type>
+			<location>C:/Users/Keiko/Code/Rice Robotics/RiceBot</location>
+		</link>
+	</linkedResources>
 </projectDescription>
