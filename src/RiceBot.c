@@ -62,22 +62,26 @@ Pid initPid(float kP, float kI, float kD) {
  * 						360 for the Quadrature Encoder
  * @param mult A multiplier to use as compensation for gear ratio
  * @param isIME 1 if IME, 0 if quad encoder
+ * @param imeAddress The address of the IME, in order of the chain from the Cortex. Starts at 0
  * @param portTop (If not IME) The port on the Cortex which the top wire of the encoder is plugged into
  * @param portBot (If not IME) The port on the Cortex which the bottom wire of the encoder is plugged into
+ * @param reverse (If not IME) Whether the QuadEncoder should count in the reverse direction
  *
  * @return The initialized and configured Ricencoder
  */
-Ricencoder initRicencoder(float ticksPerRev, int mult, int isIME,
-		unsigned char portTop, unsigned char portBot, Encoder *enc, bool reverse) {
+Ricencoder initRicencoder(float ticksPerRev, int mult, int isIME, unsigned char imeAddress,
+		unsigned char portTop, unsigned char portBot, bool reverse) {
 	Ricencoder *r = malloc(sizeof(Ricencoder));
-	r->value = 0;
+	r->rawValue = 0;
 	r->ticksPerRev = ticksPerRev;
 	r->mult = mult;
+	r->adjustedValue = 0;
 	r->isIME = isIME;
+	r->imeAddress = imeAddress;
 	r->portTop = portTop;
 	r->portBot = portBot;
 	if(!isIME) {
-		*enc = encoderInit(portTop, portBot, reverse);
+		r->enc = encoderInit(portTop, portBot, reverse);
 	}
 	return *r;
 }
@@ -107,10 +111,10 @@ void riceBotInitializeIO() {
  */
 void riceBotInitialize() {
 
-	ENCDTLeft = encoderInit(0, 0, false);
-	ENCDTRight = encoderInit(0, 0, false);
-	ENCARMLeft = encoderInit(0, 0, false);
-	ENCARMRight = encoderInit(0, 0, false);
+//	ENCDTLeft = encoderInit(0, 0, false);
+//	ENCDTRight = encoderInit(0, 0, false);
+//	ENCARMLeft = encoderInit(0, 0, false);
+//	ENCARMRight = encoderInit(0, 0, false);
 
 }
 
@@ -223,6 +227,16 @@ void setDriveTrainMotors() {
 	}
 }
 
+void updateRicencoder(Ricencoder *rc) {
+	if(rc->isIME) {
+		imeGet(rc->imeAddress, &rc->rawValue);
+	}
+	else {
+		rc->rawValue = encoderGet(rc->enc);
+	}
+	rc->adjustedValue = rc->rawValue * rc->mult;
+}
+
 void autonomousTask(int instruction, int distance, int pow, long timeout) {
 	int target;
 	long startTime = millis();
@@ -243,19 +257,11 @@ void autonomousTask(int instruction, int distance, int pow, long timeout) {
 			MOTDTMidLeft.out = power[0];
 			MOTDTBackLeft.out = power[0];
 		}
-		MOTDTFrontRight.out = 0;
-		MOTDTFrontMidRight.out = 0;
-		MOTDTMidRight.out = 0;
-		MOTDTBackRight.out = 0;
-		MOTDTFrontLeft.out = 0;
-		MOTDTFrontMidLeft.out = 0;
-		MOTDTMidLeft.out = 0;
-		MOTDTBackLeft.out = 0;
 		break;
 	case AUTODRIVEBASIC:
 		target = EncDTLeft.ticksPerRev / (4 * MATH_PI) * distance;
 		//		power = (pow == NULL) ? 127 : pow;
-		int current[2] = {EncDTLeft.value, EncDTRight.value};
+		int current[2] = {EncDTLeft.rawValue, EncDTRight.rawValue};
 
 		while(current[1] < target && millis() < startTime + timeout) {
 			if(abs(current[1] - current[0]) > 50) {
@@ -276,8 +282,8 @@ void autonomousTask(int instruction, int distance, int pow, long timeout) {
 			MOTDTBackLeft.out = power[0];
 
 			delay(20);
-			current[0] = EncDTLeft.value;
-			current[1] = EncDTRight.value;
+			current[0] = EncDTLeft.rawValue;
+			current[1] = EncDTRight.rawValue;
 		}
 		break;
 	case AUTOTURNBASIC:
@@ -308,6 +314,7 @@ void autonomousTask(int instruction, int distance, int pow, long timeout) {
 		}
 		break;
 	case AUTODRIVEGYRO:
+		target = EncDTLeft.ticksPerRev / (4 * MATH_PI) * distance;
 
 		break;
 	case AUTOCOLLECTORS:

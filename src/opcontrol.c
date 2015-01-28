@@ -73,8 +73,8 @@ void operatorControl() {
 			MOTARMBottomRight.out = 0;
 		}
 		if(joystickGetDigital(1, 8, JOY_UP)) {
-			PidARMLeft.setPoint = EncARMLeft.value;
-			PidARMRight.setPoint = EncARMRight.value;
+			PidARMLeft.setPoint = EncARMLeft.adjustedValue;
+			PidARMRight.setPoint = EncARMRight.adjustedValue;
 			PidARMFront.setPoint = PotARMFront.value;
 		}
 		if(joystickGetDigital(1, 8, JOY_DOWN))	{
