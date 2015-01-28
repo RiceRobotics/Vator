@@ -83,6 +83,8 @@ void initialize() {
 	EncARMRight = initRicencoder(627.2, 1, 1, 1, 0, NULL, 0);
 	PotARMFront = initRicepot(1);
 
+//	gyro = initRicegyro(1, 1);
+
 	printf("Preparing IMEs...\n\r");
 	printf("IME Count: %d\n\r", imeInitializeAll());
 	imeReset(IMEARMLEFT);
@@ -129,8 +131,7 @@ void startIOTask(void *ignore) {
 		updateRicencoder(&EncDTLeft);
 		updateRicencoder(&EncDTRight);
 
-		gyroVal = gyroGet(gyro);
-		//		printf("Pot: %d\n\r", PotARMFront.value);
+//		updateRicegyro(gyro);
 
 		if(!isEnabled() | !isJoystickConnected(1)) {
 			MOTDTFrontLeft.out = 0;

@@ -3,6 +3,7 @@
 	<name>Vator</name>
 	<comment></comment>
 	<projects>
+		<project>RiceBot</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -196,9 +196,7 @@ Ricepot PotARMFront;
 Ricepot PotARMLeft;
 Ricepot PotARMRight;
 
-Gyro gyro;
-//Value of Gyro retrieved at last IOTask
-int gyroVal;
+Ricegyro gyro;
 
 Pid PidDTLeft;
 Pid PidDTRight;
@@ -224,6 +222,8 @@ void getJoystickForDriveTrain();
 void setDriveTrainMotors();
 
 void updateRicencoder(Ricencoder *rc);
+
+void updateRicegyro(Ricegyro *rg);
 
 void autonomousTask(int instruction, int distance, int pow, long timeout);
 
